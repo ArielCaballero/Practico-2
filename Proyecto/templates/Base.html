@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <div class="login"></div>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/Ingreso.css')}}">
+        <h1>Inicio de Sesión</h1>
+        <body>
+            <form action="http://localhost:5000/Ingreso" method="post" class="login">
+            
+                <input type="text"name="Usuario" placeholder="Usuario"><br>
+            
+                <input type="password"name="Contraseña" placeholder="Contraseña"><br>
+            
+                <br><br>
+                <button type="submit" class="btn btn-primary btn-block btn-large">Iniciar Sesión</button>
+                <br><br>
+            
+            </form>
+        </body>
+    </div>
+    {% block content %}{% endblock %}
+</html>

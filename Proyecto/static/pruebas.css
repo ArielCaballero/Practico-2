@@ -1,0 +1,46 @@
+body
+{
+margin:0;
+padding:0;
+font-family:Arial, Helvetica, sans-serif;
+color:aquamarine
+}
+title
+{
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+}
+
+.container {
+    margin: auto;
+    padding: 10%;
+    width: 50%;
+    background-color: burlywood;
+}
+
+.container label{
+    margin-bottom: 2em;
+    margin-left:2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color:black;
+
+}
+
+.container input{
+    margin-bottom: 1em;
+    margin-left:2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    background-color: bisque;
+    
+}
+
+.container button {
+    margin-bottom: 1em;
+    margin-left: 2em;
+}
+
+.container textarea{
+    min-height: 12em;
+    resize:vertical;
+}
