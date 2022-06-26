@@ -58,11 +58,9 @@ def Registrar_Receta():
                 else:
                     if not request.form['descripcion']:
                         return render_template("Error_Receta.html", error="Debe ingresar la elaboración de la receta.", usuario_actual=session)
-                    else:
-                        nueva_receta=Receta(nombre=request.form['nombre'], tiempo=request.form['tiempo'], fecha=datetime.now(), elaboracion=request.form['descripcion'], cantidadmegusta=0, usuarioid=session['id'])
-                        db.session.add(nueva_receta)
-                        db.session.commit()
-                        return render_template("Ingresar_Ingrediente.html", id=nueva_receta.id, usuario_actual=session)
+                    else:                     
+                        
+                        return render_template("Ingresar_Ingrediente.html", nombre_receta=request.form['nombre'], tiempo=request.form['tiempo'], descripcion=request.form['descripcion'], usuario_actual=session, ingredientes="", cantidadingredientes=0)
         else:
             return render_template("Ingresar_Receta.html", usuario_actual=session)
     else:
@@ -73,22 +71,42 @@ def Registrar_Ingredientes():
     if 'nombre' in session:   
         if request.method=='POST':
             if not request.form['nombre']:
-                return render_template("Error_Ingrediente.html", error="Debe ingresar nombre de la receta.", usuario_actual=session)
+                return render_template("Error_Ingrediente.html", error="Debe ingresar nombre del Ingrediente.", usuario_actual=session)
             else: 
                 if not request.form['cantidad']:
-                    return render_template("Error_Ingrediente.html", error="Debe ingresar el tiempo de la receta.", usuario_actual=session)
+                    return render_template("Error_Ingrediente.html", error="Debe ingresar la cantidad del ingrediente", usuario_actual=session)
                 else:
                     if not request.form['unidad']:
-                        return render_template("Error_Ingrediente.html", error="Debe ingresar la elaboración de la receta.", usuario_actual=session)
+                        return render_template("Error_Ingrediente.html", error="Debe ingresar la unidad de medida.", usuario_actual=session)
                     else:
-                        nuevo_ingrediente=Ingrediente(nombre=request.form['nombre'], cantidad=request.form['cantidad'], unidad=request.form['unidad'], recetaid=request.form['id'])
-                        db.session.add(nuevo_ingrediente)
-                        db.session.commit()
-                        return render_template("Ingresar_Ingrediente.html", id=request.form['id'], usuario_actual=session)
+                        if (request.form['ingredientes']):
+                            ingredientes=request.form['ingredientes']+";"+request.form['nombre']+"/"+request.form['cantidad']+"/"+request.form['unidad']
+                        else:
+                            ingredientes=request.form['nombre']+"/"+request.form['cantidad']+"/"+request.form['unidad']
+                        return render_template("Ingresar_Ingrediente.html", nombre_receta=request.form['nombre_receta'], tiempo=request.form['tiempo'], descripcion=request.form['descripcion'], usuario_actual=session, ingredientes=ingredientes, cantidadingredientes=int(request.form['cantidadingredientes'])+1)
         else:
             return render_template("Ingresar_Ingrediente.html", usuario_actual=session)
     else:
         return render_template('index.html') #El caso base lo redirecciona al Ingreso.html
+
+@app.route('/Guardar_Receta', methods=['GET', 'POST'])
+def Guardar_Receta():
+    if 'nombre' in session:
+        if request.form['nombre_receta'] and request.form['ingredientes']:
+            nueva_receta=Receta(nombre=request.form['nombre_receta'], tiempo=request.form['tiempo'], fecha=datetime.now(), elaboracion=request.form['descripcion'], cantidadmegusta=0, usuarioid=session['id'])
+            db.session.add(nueva_receta)
+            ingredientes=request.form['ingredientes'].split(";")
+            for ingrediente in ingredientes:
+                elementos=ingrediente.split("/")
+                nuevo_ingrediente=Ingrediente(nombre=elementos[0], cantidad=elementos[1], unidad=elementos[2], recetaid=Receta.query.filter_by(fecha=nueva_receta.fecha).first().id)
+                db.session.add(nuevo_ingrediente)
+            db.session.commit()
+            return redirect(url_for('ingreso'))
+        else:
+            return render_template("Error_Ingrediente.html",error="Error en guardado de receta",nombre_receta=request.form['nombre_receta'], tiempo=request.form['tiempo'], descripcion=request.form['descripcion'], usuario_actual=session, ingredientes=request.form['ingredientes'])
+    else:
+        return render_template('index.html') #El caso base lo redirecciona al Ingreso.html
+
 
 @app.route('/Consultar_Ranking', methods=['GET', 'POST'])
 def Consultar_Ranking():
@@ -101,24 +119,51 @@ def Consultar_Ranking():
             recetasamostrar.append(recetasordenadas[i])
             i+=1
         print (recetasamostrar)
-        return render_template('Bienvenido.html', tipo_busqueda="Recetas con mas 'me gusta'",usuario_actual=session, recetas=recetasamostrar, usuarios=Usuario.query.all(), ingredientes=Ingrediente.query.all()) #Redirecciona al usuario al template de Bienvenido.html
+        return render_template('Ranking.html', tipo_busqueda="Recetas con mas 'me gusta'",usuario_actual=session, recetas=recetasamostrar, usuarios=Usuario.query.all())
     else:
-        return render_template('index.html') #El caso base lo redirecciona al Ingreso.html
+        return render_template('index.html')
 
 @app.route('/Recetas_por_tiempo', methods=['GET', 'POST'])
 def Recetas_por_tiempo():
     if 'nombre' in session:
-        recetasordenadas=Receta.query.all()
-        recetasamostrar=[]
-        tiempo=request.form['tiempo']
-        for receta in recetasordenadas:
-            if receta.tiempo<int(tiempo):
-                recetasamostrar.append(receta)
-        return render_template('Bienvenido.html', usuario_actual=session, recetas=recetasamostrar, usuarios=Usuario.query.all(), ingredientes=Ingrediente.query.all()) #Redirecciona al usuario al template de Bienvenido.html
+        if request.method=="POST":
+            recetasordenadas=Receta.query.all()
+            recetasamostrar=[]
+            tiempo=request.form['tiempo']
+            for receta in recetasordenadas:
+                if receta.tiempo<int(tiempo):
+                    recetasamostrar.append(receta)
+            return render_template('Listado.html', tipo_busqueda="Recetas por tiempo menor a {} minutos".format(tiempo),usuario_actual=session, recetas=recetasamostrar, usuarios=Usuario.query.all(), ingredientes=Ingrediente.query.all()) #Redirecciona al usuario al template de Bienvenido.html
+    else:
+        return render_template('index.html') 
+
+@app.route('/Recetas_por_ingrediente', methods=['GET', 'POST'])
+def Recetas_por_ingrediente():
+    if 'nombre' in session:
+        if request.method=="POST":
+            recetasordenadas=Ingrediente.query.all()
+            recetasamostrar=[]
+            ingredienterecibido=request.form['ingrediente']
+            for ingrediente in recetasordenadas:
+                if ingrediente.nombre.find(ingredienterecibido)>-1:
+                    receta=Receta.query.filter_by(id=ingrediente.recetaid).first()
+                    print(receta)
+                    recetasamostrar.append(receta)
+            return render_template('Listado.html', tipo_busqueda="Recetas por ingrediente: '{}'".format(ingredienterecibido), usuario_actual=session, recetas=recetasamostrar, usuarios=Usuario.query.all(), ingredientes=Ingrediente.query.all()) #Redirecciona al usuario al template de Bienvenido.html
+    else:
+        return render_template('index.html')
+
+@app.route('/megusta', methods=['GET', 'POST'])
+def megusta():
+    if 'nombre' in session:
+        if request.method=="POST":
+            if request.form['recetaid']:
+                if Receta.query.get(request.form['recetaid']).usuarioid != session['id']:
+                    Receta.query.get(request.form['recetaid']).cantidadmegusta+=1
+                    db.session.commit()
+            return redirect(url_for('ingreso'))
     else:
         return render_template('index.html') #El caso base lo redirecciona al Ingreso.html
-
-
 
 if __name__=="__main__":
     db.create_all()

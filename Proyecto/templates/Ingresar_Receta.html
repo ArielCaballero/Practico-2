@@ -4,17 +4,26 @@
 
 {% block content %}
 <div class="my-3 p-3 bg-white rounded box-shadow">
-  <form action="http://localhost:5000/Registrar_Receta" method='post' class="form-floating">
-    <label for="floatingInputValue">Nombre de la Receta</label>
-    <input type="text" name="nombre" class="form-control" id="floatingInputValue" placeholder="Nombre de la Receta">
-    <label for="floatingInputValue">Tiempo Estimado de Preparacion</label>
-    <input type="text" name="tiempo" class="form-control" id="floatingInputValue" placeholder="Tiempo Estimado de Preparacion">
-    <label for="floatingInputValue">Descripcion de Elaboración</label>
-    <input type="text" name="descripcion" class="form-control" id="floatingInputValue" placeholder="Descripcion de Elaboración">
-
-    <br>
-    <button type="submit" class="btn btn-secondary mb-3">Registrar Receta</button>
-  </form>
+<form action="http://localhost:5000/Registrar_Receta" method='post' class="row-g3">
+  <div class="col-md-6">
+    <label for="validationServerUsername" class="form-label">Nombre de la Receta</label>
+    <div class="input-group has-validation">
+      <input type="text" name="nombre" class="form-control has-validation" id="validationServerUsername" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback" placeholder="Nombre de la Receta" required>
+    </div>
   </div>
+  <label for="validationCustom03" class="form-label col-md-6">Tiempo estimado de Preparacion en minutos</label>
+  <div class="col-md-2">
+    <input type="number" min="0" name="tiempo" class="form-control has-validation" id="validationCustom03" aria-describedby="validationCustom03Feedback" placeholder="Tiempo" required>
+  </div>
+  <div class="col-md-10">
+    <label for="validationTextarea" class="form-label">Elaboracion de la receta</label>
+    <input class="form-control has-validation" name="descripcion" id="validationTextarea" placeholder="Descripcion de Elaboración" required>
+  </div>
+  <br>
+  <div class="col-12">
+    <button class="btn btn-outline-secondary" type="submit">Ingresar Ingredientes</button>
+  </div>
+</form>
+</div>
   {% block error %} {% endblock %}
 {% endblock %}

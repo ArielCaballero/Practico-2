@@ -4,18 +4,44 @@
 
 {% block content %}
 <div class="my-3 p-3 bg-white rounded box-shadow">
-  <form action="http://localhost:5000/Registrar_Ingrediente" method='post' class="form-floating">
-    <label for="floatingInputValue">Nombre del ingrediente</label>
-    <input type="text" name="nombre" class="form-control" id="floatingInputValue" placeholder="Nombre del ingrediente">
-    <label for="floatingInputValue">Cantidad</label>
-    <input type="text" name="cantidad" class="form-control" id="floatingInputValue" placeholder="Cantidad">
-    <label for="floatingInputValue">Unidad de medida</label>
-    <input type="text" name="unidad" class="form-control" id="floatingInputValue" placeholder="Unidad de medida">
-    <input type="text" name="id" value="{{id}}" hidden="True">
-    <br>
-    <button type="submit" class="btn btn-secondary mb-3">Registrar Ingrediente</button>
-    <a class="btn btn-secondary mb-3" href="http://localhost:5000/Bienvenido">Finalizar</a>
-  </form>
+    <form action="http://localhost:5000/Registrar_Ingrediente" method='post' class="row-g3">
+      <div class="col-md-6">
+        <label for="validationServerUsername" class="form-label">Nombre del Ingrediente</label>
+        <div class="input-group has-validation">
+          <input type="text" name="nombre" class="form-control" id="validationServerUsername" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback" placeholder="Nombre del ingrediente" required>
+        </div>
+      </div>
+      <label for="validationServer03" class="form-label col-md-6">Cantidad del Ingrediente</label>
+      <div class="col-md-2">
+        <input type="number" min="0" name="cantidad" class="form-control" id="validationServer03" aria-describedby="validationServer03Feedback" placeholder="Cantidad" required>
+      </div>
+      <div class="col-md-6">
+        <label for="validationTextarea" class="form-label">Unidad de medida</label>
+        <input class="form-control" name="unidad" id="validationTextarea" placeholder="Unidad de Medida" required>
+      </div>
+      <input name="nombre_receta" value="{{nombre_receta}}" hidden="True">
+      <input name="tiempo" value="{{tiempo}}" hidden="True">
+      <input name="descripcion" value="{{descripcion}}" hidden="True">
+      <input name="ingredientes" value="{{ingredientes}}" hidden="True">
+      <input name="cantidadingredientes" type="number" value="{{cantidadingredientes}}" hidden="True">
+      <br>
+      <div class="col-12">
+        {% if cantidadingredientes>9 %}
+          <button type="submit" id="submit-ingredientes" disabled aria-disabled="true" class="btn btn-outline-secondary mb-3 disabled">Registrar Ingrediente</button>
+          <strong><label for="submit-ingredientes" class="form-label col-md-6"> No puede ingresar mas de 10 ingredientes</label></strong>
+        {% else %}
+          <button type="submit" class="btn btn-outline-secondary mb-3">Registrar Ingrediente</button>
+        {% endif %}
+    </form>
+    <form action="http://localhost:5000/Guardar_Receta" method='post' class="row-g3">
+      <input name="nombre_receta" value="{{nombre_receta}}" hidden="True">
+      <input name="tiempo" value="{{tiempo}}" hidden="True">
+      <input name="descripcion" value="{{descripcion}}" hidden="True">
+      <input name="ingredientes" value="{{ingredientes}}" hidden="True">
+      <input name="cantidadingredientes" type="number" value="{{cantidadingredientes}}" hidden="True">
+      <button type="submit" class="btn btn-secondary mb-3">Guardar Receta</button>
+    </form>
   </div>
+    </div>
   {% block error %} {% endblock %}
 {% endblock %}
