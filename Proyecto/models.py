@@ -10,7 +10,7 @@ class Usuario(db.Model):
     nombre=db.Column(db.String(80), nullable=False)
     correo=db.Column(db.String(120), unique=True, nullable=False)
     clave=db.Column(db.String(120), nullable=False)
-    receta=db.relationship('Receta', backref='Usuario', cascade="all, delete-orphan")
+    recetas=db.relationship('Receta', backref='Usuario', cascade="all, delete-orphan")
 
 class Receta(db.Model):
     __tablename__='Receta'
@@ -21,7 +21,11 @@ class Receta(db.Model):
     elaboracion=db.Column(db.String(80), nullable=False)
     cantidadmegusta=db.Column(db.Integer, nullable=False)
     usuarioid=db.Column(db.Integer, db.ForeignKey('Usuario.id'))
-    receta=db.relationship('Ingrediente', backref='Receta', cascade="all, delete-orphan")
+    ingredientes=db.relationship('Ingrediente', backref='Receta', cascade="all, delete-orphan")
+
+    def __lt__(self, otro):
+        if type(otro)==type(self):
+            return (self.cantidadmegusta<otro.cantidadmegusta)
 
 class Ingrediente(db.Model):
     __tablename__='Ingrediente'

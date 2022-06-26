@@ -1,0 +1,20 @@
+{% extends "Base.html" %}
+
+{% block title %}Ingresar Receta{% endblock %}
+
+{% block content %}
+<div class="my-3 p-3 bg-white rounded box-shadow">
+  <form action="http://localhost:5000/Registrar_Receta" method='post' class="form-floating">
+    <label for="floatingInputValue">Nombre de la Receta</label>
+    <input type="text" name="nombre" class="form-control" id="floatingInputValue" placeholder="Nombre de la Receta">
+    <label for="floatingInputValue">Tiempo Estimado de Preparacion</label>
+    <input type="text" name="tiempo" class="form-control" id="floatingInputValue" placeholder="Tiempo Estimado de Preparacion">
+    <label for="floatingInputValue">Descripcion de Elaboración</label>
+    <input type="text" name="descripcion" class="form-control" id="floatingInputValue" placeholder="Descripcion de Elaboración">
+
+    <br>
+    <button type="submit" class="btn btn-secondary mb-3">Registrar Receta</button>
+  </form>
+  </div>
+  {% block error %} {% endblock %}
+{% endblock %}
