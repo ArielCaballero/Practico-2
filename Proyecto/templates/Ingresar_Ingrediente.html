@@ -4,7 +4,9 @@
 
 {% block content %}
 <div class="my-3 p-3 bg-white rounded box-shadow">
-    <form action="http://localhost:5000/Registrar_Ingrediente" method='post' class="row-g3">
+  <h4 class="border-bottom border-gray pb-2 mb-0">Ingredientes de la receta: '{{nombre_receta}}'</h4>
+  <br>  
+  <form action="http://localhost:5000/Registrar_Ingrediente" method='post' class="row-g3">
       <div class="col-md-6">
         <label for="validationServerUsername" class="form-label">Nombre del Ingrediente</label>
         <div class="input-group has-validation">
